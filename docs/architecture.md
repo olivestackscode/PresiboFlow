@@ -1,4 +1,4 @@
-# PresiboFlow Architecture 🏛️
+# PresiboFlow Architecture
 
 PresiboFlow is designed as a modular, event-driven framework for real-time healthcare automation.
 

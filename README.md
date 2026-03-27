@@ -1,4 +1,4 @@
-# PresiboFlow 🩺🤖
+# PresiboFlow
 
 **Open-source voice-first agentic AI for healthcare professionals in Nigeria and Africa.**
 

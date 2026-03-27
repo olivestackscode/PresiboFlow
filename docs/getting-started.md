@@ -1,4 +1,4 @@
-# Getting Started with PresiboFlow 🚀
+# Getting Started with PresiboFlow
 
 Follow these steps to get your voice-first healthcare framework up and running.
 

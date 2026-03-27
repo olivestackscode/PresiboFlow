@@ -1,4 +1,4 @@
-# PresiboFlow Installation Guide 🚀
+# PresiboFlow Installation Guide
 
 **PresiboFlow** is an open-source, voice-first agentic AI assistant designed for healthcare professionals—especially doctors, clinics, and hospitals in Nigeria and Africa.
 
