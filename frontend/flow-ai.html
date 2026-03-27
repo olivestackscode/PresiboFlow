@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PresiboFlow - Clinical Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .sidebar { height: calc(100vh - 80px); }
+        .chat-bubble { max-width: 80%; }
+        .pulse { animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+    </style>
+</head>
+<body class="bg-slate-50 overflow-hidden">
+    <!-- Header -->
+    <header class="h-20 bg-white border-b border-slate-200 px-8 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">P</div>
+            <h1 class="text-xl font-bold text-slate-800 uppercase tracking-tight">PresiboFlow <span class="text-blue-500">Live</span></h1>
+        </div>
+        <div class="flex items-center gap-6">
+            <div id="voice-status" class="flex items-center gap-2 text-slate-500 text-sm">
+                <span class="w-3 h-3 bg-slate-300 rounded-full"></span>
+                Voice Inactive
+            </div>
+            <button id="toggle-mic" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full font-semibold transition-all">Start Listening</button>
+        </div>
+    </header>
+
+    <main class="flex">
+        <!-- Main Chat Area -->
+        <section class="flex-1 p-6 flex flex-col sidebar">
+            <div id="transcript-feed" class="flex-1 overflow-y-auto space-y-4 pr-4">
+                <div class="bg-blue-50 border border-blue-100 p-4 rounded-2xl text-blue-800 text-sm">
+                    <strong>System:</strong> LiveKit connection ready. Waiting for clinical audio input...
+                </div>
+            </div>
+            
+            <div class="mt-6">
+                <div class="relative">
+                    <input type="text" placeholder="Type command or add manual note..." class="w-full bg-white border border-slate-200 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm">
+                    <button class="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-blue-600 hover:bg-blue-50 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Insights Sidebar -->
+        <aside class="w-96 bg-white border-l border-slate-200 p-6 sidebar overflow-y-auto shadow-sm">
+            <h2 class="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                Real-time Insights
+            </h2>
+
+            <!-- Metrics Card -->
+            <div class="bg-slate-50 rounded-2xl p-5 mb-6">
+                <h3 class="font-semibold text-slate-700 mb-4 text-sm uppercase tracking-wider">Detected Metrics</h3>
+                <div class="space-y-3" id="metrics-list">
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-slate-500">Blood Pressure</span>
+                        <span class="font-bold text-slate-800">145/95</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Clinical Evaluation (SOAP) Card -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-5 mb-6 shadow-sm">
+                <h3 class="font-semibold text-slate-800 mb-4 text-sm uppercase tracking-wider text-blue-600">Clinical Evaluation (SOAP)</h3>
+                <div class="space-y-2 text-xs" id="soap-summary">
+                    <p><strong>S:</strong> Persistent headache, fever</p>
+                    <p><strong>O:</strong> BP 145/95, Temp 38.5C</p>
+                    <p><strong>A:</strong> Suspected Malaria/Hypertension</p>
+                    <p><strong>P:</strong> Lab tests, BP monitor</p>
+                </div>
+            </div>
+
+            <!-- Prescription Card -->
+            <div id="prescription-card" class="bg-emerald-50 border border-emerald-100 rounded-2xl p-5 mb-6 hidden">
+                <h3 class="font-semibold text-emerald-800 mb-3 text-sm uppercase tracking-wider">Prescription Draft</h3>
+                <ul class="text-xs text-emerald-700 space-y-1 mb-4" id="prescription-list">
+                    <!-- Dynamic meds -->
+                </ul>
+                <button class="w-full bg-emerald-600 text-white text-xs py-2 rounded-lg font-bold hover:bg-emerald-700">Generate Slip</button>
+            </div>
+
+            <!-- Actions Card -->
+            <div class="bg-blue-600 rounded-2xl p-5 text-white">
+                <h3 class="font-semibold mb-4 text-sm uppercase tracking-wider opacity-90">Suggested Actions</h3>
+                <div id="actions-list" class="space-y-2">
+                    <p class="text-xs opacity-75">No immediate actions detected.</p>
+                </div>
+            </div>
+
+            <!-- Role Indicator -->
+            <div class="mt-auto pt-8 border-t border-slate-100 flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-slate-200" id="role-icon"></div>
+                <div>
+                    <p class="text-xs text-slate-400 font-medium">ACTIVE ROLE</p>
+                    <p class="text-sm font-bold text-slate-700 capitalize" id="role-name">User</p>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const role = urlParams.get('role') || 'provider';
+        document.getElementById('role-name').innerText = role;
+        
+        const micBtn = document.getElementById('toggle-mic');
+        const voiceStatus = document.getElementById('voice-status');
+        let isListening = false;
+
+        micBtn.onclick = () => {
+            isListening = !isListening;
+            if (isListening) {
+                micBtn.innerText = 'Stop Listening';
+                micBtn.className = 'bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-full font-semibold transition-all';
+                voiceStatus.innerHTML = '<span class="w-3 h-3 bg-red-500 rounded-full pulse"></span> Live Listening...';
+            } else {
+                micBtn.innerText = 'Start Listening';
+                micBtn.className = 'bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full font-semibold transition-all';
+                voiceStatus.innerHTML = '<span class="w-3 h-3 bg-slate-300 rounded-full"></span> Voice Inactive';
+            }
+        };
+    </script>
+</body>
+</html>

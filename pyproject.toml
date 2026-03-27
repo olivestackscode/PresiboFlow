@@ -1,0 +1,29 @@
+[project]
+name = "presiboflow"
+version = "0.1.0"
+description = "Voice-first agentic AI framework for healthcare workflow automation."
+authors = [
+    { name = "PresiboFlow Contributors" }
+]
+license = { text = "Apache-2.0" }
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "livekit-agents>=0.8.0",
+    "livekit-plugins-openai>=0.8.0",
+    "livekit-plugins-nltk>=0.8.0",
+    "langgraph>=0.0.30",
+    "langchain-openai>=0.1.0",
+    "pydantic-settings>=2.1.0",
+    "python-dotenv>=1.0.0",
+    "fastapi>=0.109.0",
+    "uvicorn>=0.27.0",
+    "loguru>=0.7.2"
+]
+
+[project.scripts]
+presiboflow = "presiboflow.core.livekit_worker:main"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
