@@ -7,10 +7,14 @@ from presiboflow.config.settings import settings
 app = FastAPI(title="PresiboFlow Backend")
 
 # Get the path to the frontend directory
-# If running as an EXE, PyInstaller might extract it to a temp folder
-frontend_dir = os.path.join(os.path.dirname(__file__), "frontend")
-if not os.path.exists(frontend_dir):
-    # Fallback for dev mode
+# Get the path to the frontend directory
+import sys
+if getattr(sys, 'frozen', False):
+    # If running as an EXE
+    base_path = sys._MEIPASS
+    frontend_dir = os.path.join(base_path, "presiboflow", "frontend")
+else:
+    # Standard development mode
     frontend_dir = os.path.join(os.getcwd(), "frontend")
 
 # Mount static files

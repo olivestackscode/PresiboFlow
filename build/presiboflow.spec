@@ -48,26 +48,17 @@ exe = EXE(
     pyz,
     a.scripts,
     [],
-    exclude_binaries=True,
+    exclude_binaries=False,
     name='PresiboFlow',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
+    runtime_tmpdir=None,
     console=True, # Set to False for windowed mode
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-)
-coll = COLLECT(
-    exe,
-    a.binaries,
-    a.zipfiles,
-    a.datas,
-    strip=False,
-    upx=True,
-    upx_exclude=[],
-    name='PresiboFlow',
 )
