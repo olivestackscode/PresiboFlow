@@ -33,8 +33,20 @@ else:
         import tempfile
         temp_dir = tempfile.mkdtemp()
         dummy_index = os.path.join(temp_dir, "index.html")
+        
+        # Diagnostics
+        debug_info = f"<p>CWD: {os.getcwd()}</p>"
+        debug_info += f"<p>FILE: {os.path.abspath(__file__)}</p>"
+        try:
+            debug_info += f"<p>Root Files: {os.listdir('.')}</p>"
+            debug_info += f"<p>Parent Files: {os.listdir('..')}</p>"
+            if os.path.exists('/var/task'):
+                debug_info += f"<p>/var/task Files: {os.listdir('/var/task')}</p>"
+        except:
+            pass
+
         with open(dummy_index, "w") as f:
-            f.write("<html><body><h1>PresiboFlow: Static assets not found.</h1></body></html>")
+            f.write(f"<html><body><h1>PresiboFlow: Static assets not found.</h1>{debug_info}</body></html>")
         frontend_dir = temp_dir
         print(f"WARNING: Static directory 'public' not found in {possible_roots}. Using temp dir.")
 
