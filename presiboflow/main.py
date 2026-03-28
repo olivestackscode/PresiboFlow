@@ -14,20 +14,32 @@ if getattr(sys, 'frozen', False):
     base_path = sys._MEIPASS
     frontend_dir = os.path.join(base_path, "presiboflow", "public")
 else:
-    # Get absolute path to the project root (one level up from presiboflow/)
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.dirname(current_dir)
-    frontend_dir = os.path.join(project_root, "public")
+    # Robust path resolution for 'public' directory
+    possible_roots = [
+        os.getcwd(),                                      # Current working directory
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))), # Project root relative to this file
+        os.environ.get("VERCEL_PROJECT_ROOT", "/var/task") # Vercel specific
+    ]
+    
+    frontend_dir = None
+    for root in possible_roots:
+        test_path = os.path.join(root, "public")
+        if os.path.exists(test_path) and os.path.isdir(test_path):
+            frontend_dir = test_path
+            break
+    
+    if not frontend_dir:
+        # Fallback to a temp directory with a real index.html file (not a directory)
+        import tempfile
+        temp_dir = tempfile.mkdtemp()
+        dummy_index = os.path.join(temp_dir, "index.html")
+        with open(dummy_index, "w") as f:
+            f.write("<html><body><h1>PresiboFlow: Static assets not found.</h1></body></html>")
+        frontend_dir = temp_dir
+        print(f"WARNING: Static directory 'public' not found in {possible_roots}. Using temp dir.")
 
-# Mount static files if directory exists, otherwise use a temporary directory
-if os.path.exists(frontend_dir):
-    app.mount("/static", StaticFiles(directory=frontend_dir), name="static")
-else:
-    import tempfile
-    temp_dir = tempfile.mkdtemp()
-    os.makedirs(os.path.join(temp_dir, "index.html"), exist_ok=True) # Dummy
-    app.mount("/static", StaticFiles(directory=temp_dir), name="static")
-    print(f"WARNING: Static directory {frontend_dir} not found. Using temp dir.")
+# Mount static files
+app.mount("/static", StaticFiles(directory=frontend_dir), name="static")
 
 @app.get("/")
 async def read_index():
