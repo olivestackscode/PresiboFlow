@@ -14,8 +14,10 @@ if getattr(sys, 'frozen', False):
     base_path = sys._MEIPASS
     frontend_dir = os.path.join(base_path, "presiboflow", "public")
 else:
-    # Standard development mode
-    frontend_dir = os.path.join(os.getcwd(), "public")
+    # Get absolute path to the project root (one level up from presiboflow/)
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.dirname(current_dir)
+    frontend_dir = os.path.join(project_root, "public")
 
 # Mount static files
 app.mount("/static", StaticFiles(directory=frontend_dir), name="static")
