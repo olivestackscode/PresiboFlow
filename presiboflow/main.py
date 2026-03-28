@@ -12,10 +12,10 @@ import sys
 if getattr(sys, 'frozen', False):
     # If running as an EXE
     base_path = sys._MEIPASS
-    frontend_dir = os.path.join(base_path, "presiboflow", "frontend")
+    frontend_dir = os.path.join(base_path, "presiboflow", "public")
 else:
     # Standard development mode
-    frontend_dir = os.path.join(os.getcwd(), "frontend")
+    frontend_dir = os.path.join(os.getcwd(), "public")
 
 # Mount static files
 app.mount("/static", StaticFiles(directory=frontend_dir), name="static")
