@@ -1,6 +1,6 @@
 # PresiboFlow
 
-**Open-source voice-first agentic AI for healthcare professionals in Nigeria and Africa.**
+**Open-source voice-first agentic AI for healthcare professionals in Africa.**
 
 PresiboFlow helps doctors, clinics, and hospitals automate daily workflows using AI — turning spoken consultations and text inputs into actionable insights and tasks.
 

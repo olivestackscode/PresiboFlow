@@ -11,10 +11,7 @@ app = FastAPI(title="PresiboFlow Backend")
 import sys
 if getattr(sys, 'frozen', False):
     # If running as an EXE
-    base_path = sys._MEIPASS
-    frontend_dir = os.path.join(base_path, "presiboflow", "public")
-else:
-    # Robust path resolution for 'public' directory
+    # Robust path resolution for 'frontend' directory
     possible_roots = [
         os.getcwd(),                                      # Current working directory
         os.path.dirname(os.path.dirname(os.path.abspath(__file__))), # Project root relative to this file
@@ -23,32 +20,19 @@ else:
     
     frontend_dir = None
     for root in possible_roots:
-        test_path = os.path.join(root, "public")
+        test_path = os.path.join(root, "frontend")
         if os.path.exists(test_path) and os.path.isdir(test_path):
             frontend_dir = test_path
             break
     
     if not frontend_dir:
-        # Fallback to a temp directory with a real index.html file (not a directory)
+        # Fallback to a temp directory with a real index.html file
         import tempfile
         temp_dir = tempfile.mkdtemp()
         dummy_index = os.path.join(temp_dir, "index.html")
-        
-        # Diagnostics
-        debug_info = f"<p>CWD: {os.getcwd()}</p>"
-        debug_info += f"<p>FILE: {os.path.abspath(__file__)}</p>"
-        try:
-            debug_info += f"<p>Root Files: {os.listdir('.')}</p>"
-            debug_info += f"<p>Parent Files: {os.listdir('..')}</p>"
-            if os.path.exists('/var/task'):
-                debug_info += f"<p>/var/task Files: {os.listdir('/var/task')}</p>"
-        except:
-            pass
-
         with open(dummy_index, "w") as f:
-            f.write(f"<html><body><h1>PresiboFlow: Static assets not found.</h1>{debug_info}</body></html>")
+            f.write("<html><body><h1>PresiboFlow: Static assets not found.</h1></body></html>")
         frontend_dir = temp_dir
-        print(f"WARNING: Static directory 'public' not found in {possible_roots}. Using temp dir.")
 
 # Mount static files
 app.mount("/static", StaticFiles(directory=frontend_dir), name="static")
