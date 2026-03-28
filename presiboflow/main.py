@@ -19,8 +19,15 @@ else:
     project_root = os.path.dirname(current_dir)
     frontend_dir = os.path.join(project_root, "public")
 
-# Mount static files
-app.mount("/static", StaticFiles(directory=frontend_dir), name="static")
+# Mount static files if directory exists, otherwise use a temporary directory
+if os.path.exists(frontend_dir):
+    app.mount("/static", StaticFiles(directory=frontend_dir), name="static")
+else:
+    import tempfile
+    temp_dir = tempfile.mkdtemp()
+    os.makedirs(os.path.join(temp_dir, "index.html"), exist_ok=True) # Dummy
+    app.mount("/static", StaticFiles(directory=temp_dir), name="static")
+    print(f"WARNING: Static directory {frontend_dir} not found. Using temp dir.")
 
 @app.get("/")
 async def read_index():
