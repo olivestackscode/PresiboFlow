@@ -2,7 +2,7 @@
 
 **PresiboFlow** is an open-source, voice-first agentic AI assistant designed for healthcare professionals—especially doctors, clinics, and hospitals in Nigeria and Africa.
 
-## 🌟 What It Helps With
+##  What It Helps With
 - **Real-time Consultation Support**: Clerking notes analysis and differential diagnosis suggestions.
 - **Vital Signs Logging**: Track BP, glucose, heart rate, and more.
 - **Automated Documents**: Generate appointment letters, prescriptions, and referrals.
@@ -14,7 +14,7 @@
 
 ---
 
-## 💻 System Requirements
+## System Requirements
 - **OS**: Windows 10 / 11 (64-bit) recommended.
 - **RAM**: Minimum 8 GB (16 GB+ strongly recommended).
 - **Disk Space**: 5–15 GB (depending on AI models).
@@ -22,7 +22,7 @@
 
 ---
 
-## 🛠️ Installation Methods
+##  Installation Methods
 
 ### 1. Easiest: Windows .exe (Recommended for Doctors)
 *No technical skills, Python, or Docker required.*
@@ -63,7 +63,7 @@
 
 ---
 
-## 🩺 First-Time Setup
+##  First-Time Setup
 
 1. **Pull the AI Model**: Open PowerShell and run `ollama pull llama3.2`.
 2. **Choose Your Role**:
@@ -73,10 +73,10 @@
 
 ---
 
-## 🛡️ Privacy & Security
+##  Privacy & Security
 - **Local-First**: All AI processing happens on YOUR computer. No patient data is sent to external clouds by default.
 - **PHI Redaction**: Built-in settings to redact sensitive identifiers before generating reports.
 
-## ❓ Troubleshooting
+##  Troubleshooting
 - **Ollama not found**: Ensure Ollama is running in your system tray.
 - **Slow performance**: Use a smaller model (e.g., `llama3.2`) or upgrade your RAM.
