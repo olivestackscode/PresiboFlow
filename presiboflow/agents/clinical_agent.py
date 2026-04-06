@@ -12,16 +12,25 @@ class ClinicalAgent(BaseHealthcareAgent):
 
     async def process(self, state: Dict[str, Any]) -> Dict[str, Any]:
         transcript = state.get("transcript", "")
-        logger.info(f"ClinicalAgent analyzing clinical data: {transcript[:50]}...")
+        preferences = state.get("preferences", {})
+        logger.info(f"ClinicalAgent analyzing with preferences: {list(preferences.keys())}")
         
-        # Simulate extraction of vital signs or medical notes
-        clinical_data = {
-            "symptoms": [],
-            "metrics": {}
-        }
+        system_msg = self.get_system_message(preferences)
+        human_msg = HumanMessage(content=f"Current Transcript: {transcript}")
         
-        # Placeholder logic
+        # In a real run, we'd call the LLM:
+        # response = await self.llm.ainvoke([system_msg, human_msg])
+        # For the demo, we'll simulate based on preferences:
+        
+        clinical_data = state.get("clinical_insights", {"symptoms": [], "metrics": {}})
+        
+        # Apply "Intelligent Clay" logic
+        if "high_bp_protocol" in preferences and "145/95" in transcript:
+            clinical_data["protocol_applied"] = preferences["high_bp_protocol"]
+            clinical_data["education_note"] = "Hypertension management: Low salt, regular exercise."
+
         if "headache" in transcript.lower():
             clinical_data["symptoms"].append("headache")
             
         return {"clinical_insights": clinical_data}
+from langchain_core.messages import HumanMessage

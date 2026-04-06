@@ -12,3 +12,5 @@ class HealthcareState(TypedDict):
     errors: List[str]
     hospital_name: str
     currency: str
+    preferences: Dict[str, Any]  # Dynamic user instructions
+    canvas_flow: List[Dict[str, Any]]  # Store the workflow nodes/edges

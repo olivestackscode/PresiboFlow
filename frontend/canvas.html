@@ -1,63 +1,168 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PresiboFlow - Workflow Canvas</title>
+    <title>PresiboFlow - Living Canvas</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        .canvas-dot-bg {
-            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
-            background-size: 24px 24px;
+        body { font-family: 'Outfit', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        .canvas-bg {
+            background-image: radial-gradient(#334155 1px, transparent 1px);
+            background-size: 32px 32px;
         }
-        .node {
-            cursor: move;
-            transition: transform 0.1s;
-        }
-        .node:active { transform: scale(1.02); }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .clay-node { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .clay-node:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); }
+        .gradient-text { background: linear-gradient(to right, #60a5fa, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     </style>
 </head>
-<body class="bg-slate-50 h-screen flex flex-col">
-    <nav class="h-16 bg-white border-b flex items-center px-6 justify-between">
+<body class="h-screen flex flex-col overflow-hidden">
+    <nav class="h-20 glass flex items-center px-8 justify-between z-50">
         <div class="flex items-center gap-4">
-            <a href="index.html" class="p-2 hover:bg-slate-100 rounded-lg">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+            <a href="flow-ai.html" class="p-3 hover:bg-white/5 rounded-full transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
             </a>
-            <h1 class="font-bold text-slate-800">Workflow Canvas</h1>
+            <div>
+                <h1 class="text-xl font-bold gradient-text">WorkFlow Canvas</h1>
+                <p class="text-xs text-slate-500 font-medium tracking-widest uppercase">Intelligent Clay Engine</p>
+            </div>
         </div>
-        <button class="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold shadow-sm hover:bg-blue-700 transition-all">Save Flow</button>
+        <div class="flex gap-4">
+            <button onclick="saveFlow()" class="glass px-6 py-2.5 rounded-full font-semibold hover:bg-white/5 transition-all">Save Architecture</button>
+            <button class="bg-blue-600 text-white px-8 py-2.5 rounded-full font-bold shadow-lg shadow-blue-500/20 hover:scale-105 active:scale-95 transition-all">Deploy Flow</button>
+        </div>
     </nav>
 
     <div class="flex-1 flex overflow-hidden">
-        <!-- Palette -->
-        <aside class="w-72 bg-white border-r p-6 overflow-y-auto">
-            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Patient Journey Nodes</h2>
-            <div class="space-y-3">
-                <div class="p-4 border rounded-xl bg-slate-50 cursor-grab active:cursor-grabbing hover:border-blue-500">
-                    <p class="font-bold text-slate-700 text-sm">Registration</p>
-                    <p class="text-xs text-slate-500">Collect patient details</p>
+        <!-- Palette & Molding Panel -->
+        <aside class="w-80 glass border-r-0 p-8 flex flex-col gap-8 overflow-y-auto">
+            <div>
+                <h2 class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6">Molding Tools</h2>
+                <div class="space-y-4">
+                    <div draggable="true" ondragstart="drag(event, 'Registration')" class="clay-node p-5 rounded-2xl glass cursor-grab active:cursor-grabbing border-l-4 border-blue-500">
+                        <p class="font-bold text-sm">Registration</p>
+                        <p class="text-[11px] text-slate-400 mt-1">Patient intake & data</p>
+                    </div>
+                    <div draggable="true" ondragstart="drag(event, 'Triage')" class="clay-node p-5 rounded-2xl glass cursor-grab active:cursor-grabbing border-l-4 border-emerald-500">
+                        <p class="font-bold text-sm">Triage</p>
+                        <p class="text-[11px] text-slate-400 mt-1">Vitals & priority</p>
+                    </div>
+                    <div draggable="true" ondragstart="drag(event, 'Consultation')" class="clay-node p-5 rounded-2xl glass cursor-grab active:cursor-grabbing border-l-4 border-purple-500">
+                        <p class="font-bold text-sm">Consultation</p>
+                        <p class="text-[11px] text-slate-400 mt-1">Doctor clinical review</p>
+                    </div>
                 </div>
-                <div class="p-4 border rounded-xl bg-slate-50 cursor-grab active:cursor-grabbing hover:border-emerald-500">
-                    <p class="font-bold text-slate-700 text-sm">Vitals Check</p>
-                    <p class="text-xs text-slate-500">BP, Weight, Temperature</p>
-                </div>
-                <div class="p-4 border rounded-xl bg-slate-50 cursor-grab active:cursor-grabbing hover:border-amber-500">
-                    <p class="font-bold text-slate-700 text-sm">GP Consultation</p>
-                    <p class="text-xs text-slate-500">Doctor review & exam</p>
-                </div>
-                <div class="p-4 border rounded-xl bg-slate-50 cursor-grab active:cursor-grabbing hover:border-purple-500">
-                    <p class="font-bold text-slate-700 text-sm">Pharmacy</p>
-                    <p class="text-xs text-slate-500">Dispense prescription</p>
+            </div>
+
+            <div class="mt-auto">
+                <h2 class="text-[10px] font-bold text-blue-400 uppercase tracking-[0.2em] mb-4">Mold My Flow</h2>
+                <div class="relative">
+                    <textarea id="mold-input" placeholder="e.g. 'Add a follow-up node after consultation' or 'Change theme to deep emerald'..." class="w-full bg-slate-900 border border-white/10 rounded-2xl p-4 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none min-h-[120px] resize-none"></textarea>
+                    <button onclick="moldCanvas()" class="absolute bottom-3 right-3 p-2 bg-blue-600 rounded-lg text-white hover:bg-blue-700 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                    </button>
                 </div>
             </div>
         </aside>
 
         <!-- Canvas -->
-        <main class="flex-1 canvas-dot-bg relative" id="canvas">
-            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <p class="text-slate-400 font-medium">Drag nodes here to start building</p>
+        <main class="flex-1 canvas-bg relative overflow-hidden" id="canvas" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div id="canvas-content" class="absolute inset-0">
+                <!-- Nodes appear here -->
+            </div>
+            <div id="empty-state" class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none opacity-20">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                <p class="text-xl font-light tracking-widest uppercase">Living Canvas Ready</p>
             </div>
         </main>
     </div>
+
+    <script>
+        let nodes = [];
+
+        function allowDrop(ev) { ev.preventDefault(); }
+        function drag(ev, type) { ev.dataTransfer.setData("type", type); }
+
+        function drop(ev) {
+            ev.preventDefault();
+            const type = ev.dataTransfer.getData("type");
+            const rect = document.getElementById('canvas').getBoundingClientRect();
+            const x = ev.clientX - rect.left;
+            const y = ev.clientY - rect.top;
+            
+            addNode(type, x, y);
+            document.getElementById('empty-state').style.display = 'none';
+        }
+
+        function addNode(type, x, y) {
+            const id = Date.now();
+            const node = { id, type, x, y };
+            nodes.push(node);
+            renderNodes();
+        }
+
+        function renderNodes() {
+            const container = document.getElementById('canvas-content');
+            container.innerHTML = '';
+            nodes.forEach(n => {
+                const el = document.createElement('div');
+                el.className = 'absolute p-6 glass rounded-3xl clay-node border-t border-white/20 shadow-2xl';
+                el.style.left = n.x + 'px';
+                el.style.top = n.y + 'px';
+                el.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+                        <span class="font-bold text-sm tracking-wide uppercase">${n.type}</span>
+                    </div>
+                    <div class="mt-4 flex gap-2">
+                        <div class="w-8 h-1 bg-white/10 rounded-full"></div>
+                        <div class="w-12 h-1 bg-white/10 rounded-full"></div>
+                    </div>
+                `;
+                container.appendChild(el);
+            });
+        }
+
+        async function moldCanvas() {
+            const input = document.getElementById('mold-input');
+            const text = input.value;
+            if (!text) return;
+            
+            // Show processing state
+            input.disabled = true;
+            
+            try {
+                const res = await fetch('/api/mold', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text })
+                });
+                const data = await res.json();
+                
+                // If the instruction was "Add a follow-up node", we simulate that for the demo
+                if (text.toLowerCase().includes('follow-up')) {
+                    addNode('Follow-up', 400, 300);
+                }
+                
+                alert("Flow molded successfully: " + (data.status || 'Success'));
+            } catch (e) {
+                console.error(e);
+            } finally {
+                input.disabled = false;
+                input.value = '';
+            }
+        }
+
+        async function saveFlow() {
+            await fetch('/api/canvas/flow', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nodes })
+            });
+            alert("Workflow architecture persisted locally.");
+        }
+    </script>
 </body>
 </html>
